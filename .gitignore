@@ -20,13 +20,16 @@ Thumbs.db
 # Application specific
 .env
 app.log
-# Logs from the scraper script (keep processed_google_queries.txt in repo if desired for tracking)
-scraper_run_logs_and_processed_urls/*.log
-scraper_run_logs_and_processed_urls/*.html 
 news_data.db
 news_data.db-journal
 
-# Newsfetch specific (if egg-info was copied)
+# Scraper logs and debug files
+scraper_run_logs_and_processed_urls/*.log
+scraper_run_logs_and_processed_urls/*.html 
+# To keep processed_google_queries.txt in git, comment out the next line
+# scraper_run_logs_and_processed_urls/processed_google_queries.txt
+
+# Newsfetch specific
 news_fetch.egg-info/
 
 # Distribution / packaging
@@ -38,3 +41,14 @@ build/
 # Other temporary files
 *.tmp
 *.bak
+
+# Accidental files
+=*.0
+=*.0.0
+
+# Specific CAPTCHA debug files at root (if not moved to scraper_run_logs_and_processed_urls)
+google_captcha_page_*.html
+uc_google_captcha_page_*.html
+google_search_debug_page.html
+google_search_error_page.html
+google_search_critical_error_page.html
