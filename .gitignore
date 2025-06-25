@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+
+# Virtual Environment
+venv/
+.venv/
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Application specific
+.env
+app.log
+# Logs from the scraper script (keep processed_google_queries.txt in repo if desired for tracking)
+scraper_run_logs_and_processed_urls/*.log
+scraper_run_logs_and_processed_urls/*.html 
+news_data.db
+news_data.db-journal
+
+# Newsfetch specific (if egg-info was copied)
+news_fetch.egg-info/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Other temporary files
+*.tmp
+*.bak

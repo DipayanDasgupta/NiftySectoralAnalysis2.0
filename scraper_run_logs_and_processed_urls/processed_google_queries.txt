@@ -1,0 +1,71 @@
+economictimes.indiatimes.com|Information Technology India 2025|01/01/2025|06/23/2025
+livemint.com|Information Technology India 2025|01/01/2025|06/23/2025
+business-standard.com|Information Technology India 2025|01/01/2025|06/23/2025
+thehindubusinessline.com|Information Technology India 2025|01/01/2025|06/23/2025
+financialexpress.com|Information Technology India 2025|01/01/2025|06/23/2025
+moneycontrol.com|Information Technology India 2025|01/01/2025|06/23/2025
+reuters.com|Information Technology India 2025|01/01/2025|06/23/2025
+bqprime.com|Information Technology India 2025|01/01/2025|06/23/2025
+cnbctv18.com|Information Technology India 2025|01/01/2025|06/23/2025
+thehindu.com|Information Technology India 2025|01/01/2025|06/23/2025
+ndtvprofit.com|Information Technology India 2025|01/01/2025|06/23/2025
+thehindu.com/business/|Information Technology India 2025|01/01/2025|06/23/2025
+zeebiz.com|Information Technology India 2025|01/01/2025|06/23/2025
+indiainfoline.com/news/|Information Technology India 2025|01/01/2025|06/23/2025
+economictimes.indiatimes.com|Infosys 2025|01/01/2025|06/23/2025
+livemint.com|Infosys 2025|01/01/2025|06/23/2025
+business-standard.com|Infosys 2025|01/01/2025|06/23/2025
+thehindubusinessline.com|Infosys 2025|01/01/2025|06/23/2025
+financialexpress.com|Infosys 2025|01/01/2025|06/23/2025
+moneycontrol.com|Infosys 2025|01/01/2025|06/23/2025
+reuters.com|Infosys 2025|01/01/2025|06/23/2025
+bqprime.com|Infosys 2025|01/01/2025|06/23/2025
+cnbctv18.com|Infosys 2025|01/01/2025|06/23/2025
+thehindu.com/business/|Infosys 2025|01/01/2025|06/23/2025
+ndtvprofit.com|Infosys 2025|01/01/2025|06/23/2025
+zeebiz.com|Infosys 2025|01/01/2025|06/23/2025
+indiainfoline.com/news/|Infosys 2025|01/01/2025|06/23/2025
+economictimes.indiatimes.com|TCS 2025|01/01/2025|06/23/2025
+livemint.com|TCS 2025|01/01/2025|06/23/2025
+business-standard.com|TCS 2025|01/01/2025|06/23/2025
+thehindubusinessline.com|TCS 2025|01/01/2025|06/23/2025
+financialexpress.com|TCS 2025|01/01/2025|06/23/2025
+moneycontrol.com|TCS 2025|01/01/2025|06/23/2025
+economictimes.indiatimes.com|Information Technology India 2025|06/22/2025|06/23/2025
+livemint.com|Information Technology India 2025|06/22/2025|06/23/2025
+business-standard.com|Information Technology India 2025|06/22/2025|06/23/2025
+thehindubusinessline.com|Information Technology India 2025|06/22/2025|06/23/2025
+financialexpress.com|Information Technology India 2025|06/22/2025|06/23/2025
+moneycontrol.com|Information Technology India 2025|06/22/2025|06/23/2025
+reuters.com|Information Technology India 2025|06/22/2025|06/23/2025
+bqprime.com|Information Technology India 2025|06/22/2025|06/23/2025
+cnbctv18.com|Information Technology India 2025|06/22/2025|06/23/2025
+thehindu.com/business/|Information Technology India 2025|06/22/2025|06/23/2025
+ndtvprofit.com|Information Technology India 2025|06/22/2025|06/23/2025
+zeebiz.com|Information Technology India 2025|06/22/2025|06/23/2025
+indiainfoline.com/news/|Information Technology India 2025|06/22/2025|06/23/2025
+economictimes.indiatimes.com|Infosys 2025|06/22/2025|06/23/2025
+livemint.com|Infosys 2025|06/22/2025|06/23/2025
+business-standard.com|Infosys 2025|06/22/2025|06/23/2025
+thehindubusinessline.com|Infosys 2025|06/22/2025|06/23/2025
+financialexpress.com|Infosys 2025|06/22/2025|06/23/2025
+moneycontrol.com|Infosys 2025|06/22/2025|06/23/2025
+reuters.com|Infosys 2025|06/22/2025|06/23/2025
+bqprime.com|Infosys 2025|06/22/2025|06/23/2025
+cnbctv18.com|Infosys 2025|06/22/2025|06/23/2025
+thehindu.com/business/|Infosys 2025|06/22/2025|06/23/2025
+ndtvprofit.com|Infosys 2025|06/22/2025|06/23/2025
+zeebiz.com|Infosys 2025|06/22/2025|06/23/2025
+indiainfoline.com/news/|Infosys 2025|06/22/2025|06/23/2025
+economictimes.indiatimes.com|TCS 2025|06/22/2025|06/23/2025
+livemint.com|TCS 2025|06/22/2025|06/23/2025
+business-standard.com|TCS 2025|06/22/2025|06/23/2025
+thehindubusinessline.com|TCS 2025|06/22/2025|06/23/2025
+financialexpress.com|TCS 2025|06/22/2025|06/23/2025
+moneycontrol.com|TCS 2025|06/22/2025|06/23/2025
+reuters.com|TCS 2025|06/22/2025|06/23/2025
+bqprime.com|TCS 2025|06/22/2025|06/23/2025
+cnbctv18.com|TCS 2025|06/22/2025|06/23/2025
+thehindu.com/business/|TCS 2025|06/22/2025|06/23/2025
+ndtvprofit.com|TCS 2025|06/22/2025|06/23/2025
+zeebiz.com|TCS 2025|06/22/2025|06/23/2025

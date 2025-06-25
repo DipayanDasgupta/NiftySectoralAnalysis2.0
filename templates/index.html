@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analyzer (Flask + JS)</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Nifty News Sentiment Analyzer (Flask + JS)</h1>
+        <p>Actual Current Date (Server): <strong id="systemActualToday">{{ system_actual_today }}</strong></p>
+
+        <div id="error-messages-container" class="errors" style="display: none;">
+            <h3>Errors:</h3>
+            <ul id="error-list"></ul>
+        </div>
+
+        <div class="main-layout">
+            <aside class="sidebar">
+                <h2>Configuration</h2>
+                <form id="apiConfigForm">
+                    <h3>API Keys (Update Session)</h3>
+                    <label for="gemini_key_sess_in">Gemini API Key:</label>
+                    <input type="password" id="gemini_key_sess_in" name="gemini_key_sess_in" placeholder="Update Gemini session key">
+                    
+                    <label for="newsapi_key_sess_in">NewsAPI.org Key:</label>
+                    <input type="password" id="newsapi_key_sess_in" name="newsapi_key_sess_in" placeholder="Update NewsAPI session key">
+                    
+                    <button type="button" id="updateApiKeysBtn">Update Keys in Session</button>
+                    <small>Keys are stored server-side in session.</small>
+                    <hr>
+                </form>
+
+                <form id="analysisForm">
+                    <h3>Analysis Parameters</h3>
+                    <hr>
+
+                    <h3>Analysis Mode</h3>
+                    <input type="radio" id="mode_sector" name="analysis_mode" value="Sector Sentiment Analysis" checked>
+                    <label for="mode_sector">Sector Sentiment Analysis</label><br>
+                    <input type="radio" id="mode_backtester" name="analysis_mode" value="Nifty 50 Backtester" disabled>
+                    <label for="mode_backtester">Nifty 50 Backtester (Coming Soon)</label><br>
+
+                    <hr>
+                    <label for="end_date">End Date for Analysis:</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ default_end_date }}" max="{{ system_actual_today }}">
+
+                    <div id="sector_analysis_inputs">
+                        <h4>Sector Analysis Setup</h4>
+                        <input type="hidden" id="sector_news_source" name="sector_news_source" value="NewsAPI.org">
+                        <p><strong>News Source:</strong> NewsAPI.org (Default)</p>
+
+                        <label for="sector_lookback">News Lookback (Days):</label>
+                        <input type="number" id="sector_lookback" name="sector_lookback" value="7" min="1" max="30"><br>
+
+                        <label for="selected_sectors">Select Sector(s):</label>
+                        <select id="selected_sectors" name="selected_sectors" multiple size="5">
+                            {% for sector in sector_options %}
+                                <option value="{{ sector }}">{{ sector }}</option>
+                            {% endfor %}
+                        </select><br>
+
+                        <label for="sector_max_articles">Max Articles for LLM (per SECTOR):</label>
+                        <input type="number" id="sector_max_articles" name="sector_max_articles" value="5" min="1" max="20"><br>
+
+                        <label for="stock_max_articles">Max Articles for LLM (per STOCK):</label>
+                        <input type="number" id="stock_max_articles" name="stock_max_articles" value="3" min="1" max="10"><br>
+
+                        <label for="sector_custom_prompt">LLM Instructions (Optional - applies to Sector & Stock):</label><br>
+                        <textarea id="sector_custom_prompt" name="sector_custom_prompt" rows="3" placeholder="e.g., Focus on financial impact..."></textarea><br>
+                    </div>
+                    <hr>
+                    <button type="submit" id="runAnalysisBtn">Run Sector Analysis</button>
+                    <div id="loading-indicator" style="display: none;">
+                        <p>Processing... Please wait.</p>
+                        <div class="spinner"></div>
+                    </div>
+                </form>
+            </aside>
+
+            <main class="content">
+                <h2>Results</h2>
+                <div id="results-summary">
+                    <p>Submit the form to see results.</p>
+                </div>
+                <div id="sector-charts-container"></div>
+                <div id="sector-details-container">
+                    <!-- Sector and stock details will be dynamically inserted here -->
+                </div>
+            </main>
+        </div>
+
+        <div class="logs-container">
+            <h2>Processing Log <small>(UI messages for current run)</small></h2>
+            <button id="clearLogsBtn">Clear Logs</button>
+            <div id="logs-output" class="logs-output-div"></div>
+        </div>
+    </div>
+
+    <!-- Pass sector-stock configuration to JavaScript -->
+    <script id="sectorStockConfig" type="application/json">
+        {{ sector_stock_config_json | safe }}
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
