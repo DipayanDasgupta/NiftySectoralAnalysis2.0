@@ -6,36 +6,37 @@ This web application performs sentiment analysis on news related to selected Nif
 
 -   **Local News Database:**
     -   Employs a Python script (`scrape_financial_news_db.py`) using an embedded `news-fetch`-style library (`utils/newsfetch_lib/`) for data acquisition.
-    -   Uses Selenium (with `undetected-chromedriver` attempts) for Google Search to find article URLs based on Nifty sectors, stocks, and user-defined date ranges.
+    -   Uses Selenium (with `undetected-chromedriver`) for Google Search to find article URLs based on Nifty sectors, stocks, and user-defined date ranges.
     -   Extracts article content using `news-please` and `newspaper4k`.
     -   Stores scraped articles in a local SQLite database (`news_data.db`) via SQLAlchemy.
 -   **Sentiment Analysis:**
     -   **VADER:** Lexical sentiment scoring for individual articles.
-    -   **Google Gemini LLM:** Contextual analysis on articles retrieved from the local database, providing:
+    -   **Google Gemini LLM:** Contextual analysis on articles retrieved from the local database (or NewsAPI as a fallback in ad-hoc mode), providing:
         -   Overall sentiment scores and labels for sectors/stocks.
         -   Concise summaries.
         -   Sentiment reasoning.
         -   Key themes, potential impacts, companies in context, risks, and opportunities.
 -   **Interactive Web Interface:**
     -   Built with Flask (backend) and vanilla JavaScript with Chart.js (frontend).
-    -   Allows users to configure analysis parameters:
-        -   Date range for news analysis.
-        -   News lookback period.
-        -   Nifty sectors and (subsequently) constituent stocks.
+    -   **Operation Modes:**
+        -   **Batch Sector Analysis:** Analyzes multiple selected Nifty sectors using data from the local DB. Allows drill-down for stock-specific analysis within displayed sector results.
+        -   **Ad-hoc Stock/Sector Analysis (+Scrape):** Focuses on a single user-defined stock or sector. Can optionally trigger a fresh, targeted scrape for the specified date range and domains, or use NewsAPI as a fallback. Displays rolling daily sentiment and (for stocks) price charts.
+    -   Users can configure:
+        -   Date range for news analysis/scraping.
+        -   News source priority for ad-hoc mode.
         -   Maximum articles per entity for LLM processing.
         -   Custom instructions for the LLM.
-    -   Dynamically displays sentiment scores (charts) and detailed LLM insights based on data from the local database.
 -   **Configuration & Logging:**
-    -   API keys (Gemini) and Database URL managed via `.env` and `config.py`.
+    -   API keys (Gemini, NewsAPI) and Database URL managed via `.env` and `config.py`.
     -   Server-side session management for temporary API key updates via UI.
     -   Comprehensive backend logging for both the Flask app and the scraper script.
     -   UI logging for user feedback during processing.
 
 ## Project Goal Evolution
 
-The project initially relied on NewsAPI.org. It has been significantly enhanced to build its own news corpus. This provides:
+The project initially relied solely on NewsAPI.org. It has been significantly enhanced to build and utilize its own news corpus. This provides:
 -   Access to a broader range of historical data (once scraped).
--   Reduced dependency on rate limits and data freshness constraints of free/paid news APIs.
+-   Reduced dependency on rate limits and data freshness constraints of free/paid news APIs for primary analysis.
 -   Greater control over the data acquisition pipeline.
 -   A richer dataset for potential future backtesting features.
 
@@ -44,72 +45,73 @@ The project initially relied on NewsAPI.org. It has been significantly enhanced 
 -   `app.py`: Main Flask application.
 -   `scrape_financial_news_db.py`: Script for bulk scraping news into the database.
 -   `config.py`: Loads configuration from `.env`.
--   `.env`: (User-created) Stores API keys, `DATABASE_URL`.
+-   `.env.example`: Example environment file. (User creates `.env`)
 -   `requirements.txt`: Python dependencies.
--   `static/`: CSS and JavaScript files.
--   `templates/`: HTML templates.
+-   `static/`: CSS (`style.css`) and JavaScript (`main.js`).
+-   `templates/`: HTML template (`index.html`).
 -   `utils/`:
     -   `database_models.py`: SQLAlchemy models for the news database.
     -   `db_crud.py`: Functions for database interaction.
     -   `gemini_utils.py`: Gemini LLM interaction logic and `NIFTY_SECTORS_QUERY_CONFIG`.
+    -   `newsapi_helpers.py`: Logic for fetching news from NewsAPI.org (used as fallback).
     -   `sentiment_analyzer.py`: VADER sentiment calculation.
     -   `newsfetch_lib/`: Embedded library for news fetching and parsing.
-        -   `google.py`: Selenium-based Google Search URL extractor.
-        -   `news.py`: Core `Newspaper` class for article processing.
+        -   `google.py`: Selenium-based Google Search URL extractor (uses `undetected-chromedriver`).
+        -   `news.py`: Core `Newspaper` class for article processing (orchestrates `news-please`, `newspaper4k`).
         -   (and other handlers/helpers)
--   `news_data.db`: SQLite database file (created by scripts).
--   `scraper_run_logs_and_processed_urls/`: Logs and tracking files for the scraper.
+-   `news_data.db`: SQLite database file (created by scripts/app on first run).
+-   `scraper_run_logs_and_processed_urls/`: Logs and tracking files for the bulk scraper.
+-   `google_captcha_pages/`: Directory where HTML of CAPTCHA/block pages encountered by `google.py` are saved.
 
 ## Setup Instructions
 
 1.  **Prerequisites:**
     *   Git
     *   Python 3.9+ & pip
-    *   Google Chrome browser installed.
-    *   `chromedriver` compatible with your Chrome version (ensure it's in your system's PATH, or configure `utils/newsfetch_lib/google.py` to use `webdriver-manager`).
+    *   Google Chrome browser installed (ensure it's reasonably up-to-date).
+    *   `undetected-chromedriver` will attempt to download a compatible `chromedriver`. Ensure you have permissions for it to write to its cache directory (usually `~/.local/share/undetected_chromedriver/`).
 
 2.  **Clone the Repository (if starting fresh):**
     ```bash
-    git clone https://github.com/DipayanDasgupta/NiftySectoralAnalysis2.0.git
-    cd NiftySectoralAnalysis2.0
+    git clone https://github.com/DipayanDasgupta/NiftySectoralAnalysis2.0.git # Or your repo URL
+    cd NiftySectoralAnalysis2.0 
     ```
 
 3.  **Create and Activate Python Virtual Environment:**
     ```bash
     python3 -m venv venv
-    source venv/bin/activate
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
     ```
 
 4.  **Install Dependencies:**
     ```bash
     pip install --upgrade pip
     pip install -r requirements.txt
-    # On first run, NLTK's VADER lexicon will be downloaded.
-    # undetected-chromedriver might attempt to download a compatible chromedriver.
+    # On first run, NLTK's VADER lexicon and other resources might be downloaded.
     ```
 
 5.  **Configure API Keys and Database:**
-    *   Create a file named `.env` in the project root.
-    *   Add your API keys to the `.env` file in the following format:
+    *   Copy `.env.example` to `.env` (if an example file is provided) or create a new file named `.env` in the project root.
+    *   Add your API keys and other settings to the `.env` file:
         ```env
         GEMINI_API_KEY="your_actual_gemini_api_key"
-        FLASK_SECRET_KEY="a_very_strong_random_secret_key_please_change_this"
-        DATABASE_URL="sqlite:///./news_data.db" 
-        # Optional: YOUR_CHOSEN_SEARCH_API_KEY_NAME_IN_ENV="your_paid_search_api_key" (if using a paid search API)
+        NEWSAPI_ORG_API_KEY="your_actual_newsapi_key" # Required for NewsAPI fallback in ad-hoc mode
+        FLASK_SECRET_KEY="a_very_strong_random_secret_key_please_change_this_immediately"
+        DATABASE_URL="sqlite:///./news_data.db" # Default SQLite in project root
+        # Optional: For overriding default scraper delays in config.py
+        # APP_SCRAPER_SEARCH_DELAY_GOOGLE=5
+        # APP_SCRAPER_ARTICLE_FETCH_DELAY=2 
         ```
     *   Replace placeholders with your real API keys.
     *   **Important:** Change `FLASK_SECRET_KEY` to a unique, strong random string.
 
-6.  **Initialize Database & Populate with News:**
-    *   First, ensure the database schema is created:
-        ```bash
-        python utils/database_models.py
-        ```
-    *   Then, run the scraper to populate the database. This is a long-running process.
+6.  **Initialize Database & Populate with News (Optional but Recommended for Batch Mode):**
+    *   The database schema (`news_data.db`) will be created automatically when `scrape_financial_news_db.py` or `app.py` is run for the first time if the DB file doesn't exist.
+    *   To populate the database with a significant amount of news for the "Batch Sector Analysis" mode, run the bulk scraper:
         ```bash
         python scrape_financial_news_db.py
         ```
-        You will be prompted to enter a start and end date for the news articles you wish to scrape.
+        You will be prompted to enter a start and end date for the news articles you wish to scrape. This can be a long-running process depending on the date range and number of keywords.
 
 7.  **Run the Flask Application:**
     ```bash
@@ -119,25 +121,41 @@ The project initially relied on NewsAPI.org. It has been significantly enhanced 
 
 ## Using the Application
 
-1.  **API Keys:** Ensure your Gemini API key is in `.env` or update it via the UI for the session.
-2.  **Data Source:** The application primarily uses the locally scraped data from `news_data.db`.
-3.  **Analysis:**
-    *   Select "Sector Sentiment Analysis" mode.
-    *   Choose the "End Date for Analysis" and "News Lookback (Days)" that fall within the range of data you have scraped into your database.
-    *   Select sectors.
-    *   Click "Run Sector Analysis".
-    *   Once sector results are displayed, you can select constituent stocks for that sector and click the "Run Analysis for Selected Stocks" button that appears within that sector's results.
-4.  **View Results:** Charts and detailed LLM/VADER insights will be displayed. The UI log shows processing steps.
+1.  **API Keys:** Ensure your Gemini and NewsAPI.org API keys are correctly set in your `.env` file. You can also temporarily update them for your current browser session via the UI.
+2.  **Operation Modes:**
+    *   **Batch Sector Analysis:**
+        *   Select this mode.
+        *   Choose a "Start Date" and "End Date" for analysis (ensure data exists in your `news_data.db` for this range if you've run the bulk scraper).
+        *   Select one or more Nifty sectors.
+        *   Set LLM parameters (max articles, custom prompt).
+        *   Click "Run Operation". Sector-level sentiment charts and LLM analysis will appear.
+        *   Within each sector's result, you can select constituent stocks and click "Analyze Selected Stocks" for a more granular analysis using the same date range and LLM parameters.
+    *   **Ad-hoc Stock/Sector Analysis (+Scrape):**
+        *   Select this mode.
+        *   Choose "Target Type" (Stock or Sector).
+        *   Enter the "Target Name/Ticker".
+        *   Select "Start Date" and "End Date".
+        *   Choose "News Source Priority":
+            *   `Local DB first, then NewsAPI`: Recommended.
+            *   `Local DB Only`: Only uses your scraped data.
+            *   `NewsAPI.org Only`: Directly queries NewsAPI (useful for very recent news if DB isn't fresh).
+        *   Optionally, check "Trigger Fresh Scrape..." and provide domains if you want the app to attempt a *small, quick scrape* for the target and date range before analysis. **Use with caution for short date ranges due to potential CAPTCHAs.**
+        *   Set LLM parameters.
+        *   Click "Run Operation". Results will include an LLM analysis, a table of articles used, and a chart showing daily VADER sentiment (and stock price if applicable).
 
 ## Key Challenges & Notes
 
--   **Google Search Scraping:** Directly scraping Google Search is challenging due to CAPTCHAs and bot detection. The integrated `GoogleSearchNewsURLExtractor` attempts mitigations but may still be blocked. For robust, high-volume URL acquisition, using a paid Google Search API is recommended as a future enhancement. Inspect `uc_google_captcha_page...html` files if created during scraping.
--   **Data Volume:** The effectiveness of the dashboard depends on the amount and relevance of data in `news_data.db`. Regular runs of `scrape_financial_news_db.py` are needed to keep it populated.
--   **LLM Costs:** Be mindful of Google Gemini API usage costs.
+-   **Google Search Scraping (for `scrape_financial_news_db.py` and ad-hoc scrape):** Directly scraping Google Search is highly prone to CAPTCHAs and IP blocks. The integrated `GoogleSearchNewsURLExtractor` uses `undetected-chromedriver` and various techniques to mitigate this, but success is not guaranteed and can vary.
+    -   Inspect files in the `google_captcha_pages/` directory if scraping yields no URLs; these HTML files show what Google returned (e.g., a CAPTCHA page).
+    -   For robust, high-volume URL acquisition for the bulk scraper, a paid Google Search API (like SerpApi) or a commercial scraping service that handles CAPTCHAs would be a more reliable long-term solution.
+-   **Data Volume & Quality:** The effectiveness of the "Batch Sector Analysis" mode heavily depends on the amount and relevance of data populated into `news_data.db` by `scrape_financial_news_db.py`. Regular runs of the bulk scraper are needed to build and maintain this corpus.
+-   **LLM & NewsAPI Costs:** Be mindful of API usage costs for Google Gemini and NewsAPI.org (if used frequently as a fallback or primary source in ad-hoc mode).
+-   **Synchronous On-Demand Scrape:** The "Trigger Fresh Scrape" feature in the ad-hoc mode runs synchronously within the Flask request. It's intended for very small, targeted scrapes (e.g., 1-2 domains, short date range). Longer scrapes will cause the UI to hang.
 
 ## Future Enhancements
 
--   Integration of a reliable paid Google Search API.
--   Implementation of a Nifty 50 Backtester module.
--   Asynchronous scraping tasks triggered from the Flask app for near real-time updates.
--   Advanced database querying and full-text search capabilities.
+-   Integration of a reliable paid Search API for the bulk scraper.
+-   Implementation of a Nifty 50 Backtester module using historical sentiment and price data.
+-   Asynchronous task queue (e.g., Celery with Redis/RabbitMQ) for on-demand scraping from the Flask app to prevent UI blocking.
+-   More sophisticated data visualization and dashboarding features.
+-   User account management and saved preferences.
